@@ -2,18 +2,16 @@ package com.maljaaa.commerse.dto;
 
 import lombok.Data;
 
+import static com.maljaaa.commerse.utils.SuccessMessage.*;
+
 @Data
 public class CreateUserResponse {
 
     private Long id;
-    private String name;
-    private String email;
-    private String pwd;
+    private String message;
 
-    public CreateUserResponse(Long id, String name, String email, String pwd) {
+    public CreateUserResponse(Long id, String name) {
         this.id = id;
-        this.name = name;
-        this.email = email;
-        this.pwd = pwd;
+        this.message = name + SIGNUP_OK.getMessage();
     }
 }

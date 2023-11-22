@@ -27,8 +27,6 @@ public class UserApiController {
         user.setEmail(request.getEmail());
         user.setPwd(request.getPwd());
 
-        User signUpUser = userService.signUp(user);
-
-        return new CreateUserResponse(signUpUser.getId(), signUpUser.getName(), signUpUser.getEmail(), signUpUser.getPwd());
+        return userService.signUp(user);
     }
 }

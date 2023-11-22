@@ -1,5 +1,6 @@
 package com.maljaaa.commerse.service;
 
+import com.maljaaa.commerse.dto.CreateUserResponse;
 import com.maljaaa.commerse.model.User;
 import com.maljaaa.commerse.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -8,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static com.maljaaa.commerse.utils.Message.*;
+import static com.maljaaa.commerse.utils.ErrorMessage.*;
 
 @Service
 @Transactional(readOnly = true)
@@ -21,11 +22,11 @@ public class UserService {
      * 회원 가입
      */
     @Transactional
-    public User signUp(User user) {
+    public CreateUserResponse signUp(User user) {
         validateDuplicateUser(user);
         userRepository.save(user);
 
-        return user;
+        return new CreateUserResponse(user.getId(), user.getName());
     }
 
     private void validateDuplicateUser(User user) {

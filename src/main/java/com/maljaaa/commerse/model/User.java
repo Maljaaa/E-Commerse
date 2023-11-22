@@ -1,29 +1,27 @@
 package com.maljaaa.commerse.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
 @Entity
 @Getter @Setter
+@Table(name = "User")
 public class User {
 
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
     private Long id;
 
-    @Column(name = "user_name")
+    @Column(name = "user_name", length = 20)
     private String name;
 
-    @NotEmpty
-    @Column(name = "user_email")
+    @NotNull
+    @Column(name = "user_email", unique = true, length = 30)
     private String email;
 
-    @NotEmpty
+    @NotNull
     @Column(name = "user_pwd")
     private String pwd;
 }
