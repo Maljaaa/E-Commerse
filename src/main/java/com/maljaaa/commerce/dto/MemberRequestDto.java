@@ -14,11 +14,13 @@ public class MemberRequestDto {
 
     private String email;
     private String pwd;
+    private String name;
 
     public Member toMember(PasswordEncoder passwordEncoder) {
         return Member.builder()
                 .email(email)
                 .pwd(passwordEncoder.encode(pwd))
+                .name(name)
                 .authority(ROLE_USER)
                 .build();
     }
