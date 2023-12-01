@@ -17,6 +17,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.maljaaa.commerce.utils.ErrorMessage.*;
+
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -37,7 +39,7 @@ public class AuthService {
 
     private void validateDuplicatedEmail(MemberRequestDto memberRequestDto) {
         if (memberRepository.existsByEmail(memberRequestDto.getEmail())) {
-            throw new RuntimeException("이미 가입되어 있는 유저입니다.");
+            throw new RuntimeException(DUPLICATE_EMAIL.getMessage());
         }
     }
 
@@ -69,21 +71,17 @@ public class AuthService {
     @Transactional
     public TokenDto reissue(TokenRequestDto tokenRequestDto) {
         // 1. RefreshToekn 검증
-        if (!tokenProvider.validateToken(tokenRequestDto.getRefreshToken())) {
-            throw new RuntimeException("Refresh Token이 유효하지 않습니다.");
-        }
+        validateRefreshToken(tokenRequestDto);
 
         // 2. AccessToken에서 Member ID 가져오기
         Authentication authentication = tokenProvider.getAuthentication(tokenRequestDto.getAccessToken());
 
         // 3. 저장소에서 ID를 기반으로 RF 값 가져옴
         RefreshToken refreshToken = refreshTokenRepository.findByKey(authentication.getName())
-                .orElseThrow(() -> new RuntimeException("로그아웃 된 사용자입니다."));
+                .orElseThrow(() -> new RuntimeException(LOGOUT_USER.getMessage()));
 
         // 4. RF 일치하는지 검사
-        if (!refreshToken.getValue().equals(tokenRequestDto.getRefreshToken())) {
-            throw new RuntimeException("토큰의 유저 정보가 일치하지 않습니다.");
-        }
+        validateUserInfoInToken(tokenRequestDto, refreshToken);
 
         // 5. 새로운 토큰 생성
         TokenDto tokenDto = tokenProvider.generateTokenDto(authentication);
@@ -94,6 +92,18 @@ public class AuthService {
 
         // 토큰 발급
         return tokenDto;
+    }
+
+    private void validateRefreshToken(TokenRequestDto tokenRequestDto) {
+        if (!tokenProvider.validateToken(tokenRequestDto.getRefreshToken())) {
+            throw new RuntimeException(VALIDATE_RF.getMessage());
+        }
+    }
+
+    private void validateUserInfoInToken(TokenRequestDto tokenRequestDto, RefreshToken refreshToken) {
+        if (!refreshToken.getValue().equals(tokenRequestDto.getRefreshToken())) {
+            throw new RuntimeException(TOKEN_ERROR.getMessage());
+        }
     }
 }
 

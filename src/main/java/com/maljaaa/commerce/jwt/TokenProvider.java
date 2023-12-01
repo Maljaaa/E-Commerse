@@ -21,6 +21,8 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.stream.Collectors;
 
+import static com.maljaaa.commerce.utils.ErrorMessage.*;
+
 @Slf4j
 @Component
 public class TokenProvider {
@@ -93,12 +95,16 @@ public class TokenProvider {
 
     private void validateClaims(Claims claims) {
         if (claims.get(AUTHORITIES_KEY) == null) {
-            throw new RuntimeException("권한 정보가 없는 토큰입니다.");
+            throw new RuntimeException(VALIDATE_CLAIMS.getMessage());
         }
     }
 
     private Collection<? extends GrantedAuthority> getAuthorities(Claims claims) {
-        return Arrays.stream(claims.get(AUTHORITIES_KEY).toString().split(","))
+        return Arrays.stream(
+                claims.get(AUTHORITIES_KEY)
+                        .toString()
+                        .split(",")
+                )
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
     }
@@ -108,13 +114,13 @@ public class TokenProvider {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
             return true;
         } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
-            log.info("잘못된 JWT 서명입니다.");
+            log.info(JWT_EXCEPTION.getMessage());
         } catch (ExpiredJwtException e) {
-            log.info("만료된 JWT 토큰입니다.");
+            log.info(JWT_EXPIRED.getMessage());
         } catch (UnsupportedJwtException e) {
-            log.info("지원되지 않는 JWT 토큰입니다.");
+            log.info(JWT_UNSUPPORTED.getMessage());
         } catch (IllegalArgumentException e) {
-            log.info("JWT 토큰이 잘못되었습니다.");
+            log.info(JWT_ILLEGALARGUMENT.getMessage());
         }
 
         return false;
@@ -122,7 +128,11 @@ public class TokenProvider {
 
     private Claims parseClaims(String accessToken) {
         try {
-            return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(accessToken).getBody();
+            return Jwts.parserBuilder()
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(accessToken)
+                    .getBody();
         } catch (ExpiredJwtException e) {
             return e.getClaims();
         }
