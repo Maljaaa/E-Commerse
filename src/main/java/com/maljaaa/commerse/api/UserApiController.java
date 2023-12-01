@@ -1,8 +1,8 @@
 package com.maljaaa.commerse.api;
 
-import com.maljaaa.commerse.dto.CreateUserRequest;
-import com.maljaaa.commerse.dto.CreateUserResponse;
-import com.maljaaa.commerse.model.User;
+import com.maljaaa.commerse.dto.signup.CreateUserRequest;
+import com.maljaaa.commerse.dto.signup.CreateUserResponse;
+import com.maljaaa.commerse.model.Member;
 import com.maljaaa.commerse.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -22,11 +22,16 @@ public class UserApiController {
     @PostMapping("/api/signup")
     public CreateUserResponse saveUser(@RequestBody @Valid CreateUserRequest request) {
 
-        User user = new User();
-        user.setName(request.getName());
-        user.setEmail(request.getEmail());
-        user.setPwd(request.getPwd());
+        Member member = new Member();
+        member.setName(request.getName());
+        member.setEmail(request.getEmail());
+        member.setPwd(request.getPwd());
 
-        return userService.signUp(user);
+        return userService.signUp(member);
     }
+
+    /**
+     * 로그인
+     */
+
 }

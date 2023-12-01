@@ -1,8 +1,8 @@
 package com.maljaaa.commerse.service;
 
-import com.maljaaa.commerse.dto.CreateUserResponse;
-import com.maljaaa.commerse.model.User;
-import com.maljaaa.commerse.repository.UserRepository;
+import com.maljaaa.commerse.dto.signup.CreateUserResponse;
+import com.maljaaa.commerse.model.Member;
+import com.maljaaa.commerse.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,23 +16,23 @@ import static com.maljaaa.commerse.utils.ErrorMessage.*;
 @RequiredArgsConstructor
 public class UserService {
 
-    private final UserRepository userRepository;
+    private final MemberRepository memberRepository;
 
     /**
      * 회원 가입
      */
     @Transactional
-    public CreateUserResponse signUp(User user) {
-        validateDuplicateUser(user);
-        userRepository.save(user);
+    public CreateUserResponse signUp(Member member) {
+        validateDuplicateUser(member);
+        memberRepository.save(member);
 
-        return new CreateUserResponse(user.getId(), user.getName());
+        return new CreateUserResponse(member.getId(), member.getName());
     }
 
-    private void validateDuplicateUser(User user) {
-        List<User> findUsers = userRepository.findByEmail(user.getEmail());
+    private void validateDuplicateUser(Member member) {
+        List<Member> findMembers = memberRepository.findByEmail(member.getEmail());
 
-        if(!findUsers.isEmpty()) {
+        if(!findMembers.isEmpty()) {
             throw new IllegalStateException(DUPLICATE_EMAIL.getMessage());
         }
     }
