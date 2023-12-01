@@ -32,9 +32,10 @@ public class Member {
     private Authority authority;
 
     @Builder
-    public Member(String email, String pwd, Authority authority) {
+    public Member(String email, String pwd, String name, Authority authority) {
         this.email = email;
         this.pwd = pwd;
+        this.name = name;
         this.authority = authority;
     }
 }

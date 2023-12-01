@@ -14,6 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
 
+import static com.maljaaa.commerce.utils.ErrorMessage.DB_ERROR;
+
 @Service
 @RequiredArgsConstructor
 public class CustomUserDetailService implements UserDetailsService {
@@ -25,7 +27,7 @@ public class CustomUserDetailService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return memberRepository.findByEmail(username)
                 .stream().map(this::createUserDetails)
-                .findAny().orElseThrow(() -> new UsernameNotFoundException(username + " -> DB에서 찾을 수 없습니다."));
+                .findAny().orElseThrow(() -> new UsernameNotFoundException(username + DB_ERROR.getMessage()));
     }
 
     private UserDetails createUserDetails(Member member) {
