@@ -1,4 +1,4 @@
-package com.maljaaa.commerse.dto;
+package com.maljaaa.commerse.dto.signup;
 
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
